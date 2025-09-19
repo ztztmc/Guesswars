@@ -1,102 +1,119 @@
-import Image from "next/image";
+"use client";
+
+import { useSession, signIn, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const router = useRouter();
+  const { data: session, status } = useSession();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
+  if (status === "loading") {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <main className="flex-grow flex flex-col items-center justify-center text-center">
+          <div className="animate-spin h-10 w-10 border-4 border-white rounded-full border-t-transparent"></div>
+        </main>
+        <footer className="w-full flex gap-6 flex-wrap items-center justify-center p-4 font-medium text-neutral-400">
+          <a className="flex items-center gap-2">© 2025 ztzt</a>
           <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            className="flex items-center gap-2 hover:bg-neutral-800 transition-colors duration-200 rounded-full px-4 py-2"
+            href="https://youtube.com/@ztztbw"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
+            youtube.com/@ztztbw
           </a>
+          <a className="flex items-center gap-2">ztztalt@gmail.com</a>
+        </footer>
+      </div>
+    );
+  }
+
+  if (session) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <main className="flex flex-col flex-grow gap-4 items-center text-center min-h-full justify-center py-20 px-4 mt-10">
+          <div className="flex flex-row items-center gap-2 bg-neutral-900 px-1.5 py-1 rounded-full">
+            {session.user.image && (
+              <img
+                src={session.user.image}
+                alt="Profile"
+                className="w-8 h-8 rounded-full"
+              />
+            )}
+            <span className="font-medium">{session.user.name}</span>
+            <button
+              onClick={() => signOut()}
+              className="cursor-pointer rounded-full transition-colors duration-300 h-7 px-3 bg-neutral-800 hover:bg-[#313131] text-white font-medium text-sm"
+            >
+              Sign Out
+            </button>
+          </div>
+          <h1 className="font-black text-5xl max-w-lg">Guesswars</h1>
+          <div className="flex gap-4 items-center">
+            <button
+              onClick={() => {
+                router.push("/game");
+              }}
+              className="cursor-pointer rounded-full transition-all duration-300 flex items-center justify-center bg-white hover:bg-[#cecece] text-black font-medium text-sm h-10 px-4 mt-2"
+            >
+              Play
+            </button>
+          </div>
+        </main>
+        <footer className="w-full flex gap-6 flex-wrap items-center justify-center p-4 font-medium text-neutral-400">
+          <a className="flex items-center gap-2">© 2025 ztzt</a>
           <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            className="flex items-center gap-2 hover:bg-neutral-800 transition-colors duration-200 rounded-full px-4 py-2"
+            href="https://youtube.com/@ztztbw"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Read our docs
+            youtube.com/@ztztbw
           </a>
+          <a className="flex items-center gap-2">ztztalt@gmail.com</a>
+        </footer>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      <main className="flex flex-col flex-grow gap-4 items-center text-center min-h-full justify-center py-20 px-4 mt-10">
+        <h1 className="font-black text-5xl max-w-lg">
+          Guess where you are in Bedwars
+        </h1>
+        <p className="mt-1 text-neutral-400 max-w-md font-medium">
+          You&apos;ll see an image from a random spot in a random Hypixel
+          Bedwars map. You have to guess the map and the location. Earn points
+          based on how close you were.
+        </p>
+        <div className="flex gap-2.5 items-center">
+          <button
+            onClick={() => signIn("discord")}
+            className="cursor-pointer rounded-full transition-colors duration-300 flex items-center justify-center bg-white hover:bg-[#cecece] text-black font-medium text-sm h-10 px-4 mt-2"
+          >
+            Login with Discord
+          </button>
+          <button
+            onClick={() => router.push("/game")}
+            className="cursor-pointer rounded-full transition-colors duration-300 flex items-center justify-center bg-neutral-800/[0.75] hover:bg-neutral-800 text-neutral-200 font-medium text-sm h-10 px-4 mt-2"
+          >
+            Play as Guest
+          </button>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
+      <footer className="w-full flex gap-6 flex-wrap items-center justify-center p-4 font-medium text-neutral-400">
+        <a className="flex items-center gap-2">© 2025 ztzt</a>
         <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          className="flex items-center gap-2 hover:bg-neutral-800 transition-colors duration-200 rounded-full px-4 py-2"
+          href="https://youtube.com/@ztztbw"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
+          youtube.com/@ztztbw
         </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+        <a className="flex items-center gap-2">ztztalt@gmail.com</a>
       </footer>
     </div>
   );
