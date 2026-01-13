@@ -1,9 +1,19 @@
+import { ExternalLink } from "lucide-react";
+
 export default function Footer() {
   return (
-    <footer className="w-full flex gap-6 flex-wrap items-center justify-center p-4 font-medium text-neutral-400">
-      <a className="flex items-center gap-2">© 2025 ztzt</a>
+    <footer className="w-full flex gap-4 flex-wrap items-center justify-center p-4 font-medium text-neutral-400">
       <a
-        className="flex items-center gap-2 hover:bg-neutral-800 transition-colors duration-200 rounded-full px-4 py-2"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-2 hover:bg-neutral-800 rounded-full px-4 py-2 transition-colors"
+        href="https://github.com/ztztmc/guesswars"
+      >
+        Github
+        <ExternalLink width={17} />
+      </a>
+      <a
+        className="flex items-center gap-2 hover:bg-neutral-800 duration-200 rounded-full px-4 py-2 transition-colors"
         href="https://youtube.com/@ztztbw"
         target="_blank"
         rel="noopener noreferrer"
