@@ -132,12 +132,11 @@ export default function GamePage() {
       const imgW = 1440;
       const imgH = 1440;
       const maxDist = Math.sqrt(imgW * imgW + imgH * imgH);
-      // Linear score: max points for 0 dist, 0 for maxDist or more
       pointsEarned = Math.round(
         MAX_POINTS_PER_ROUND * Math.exp(-4 * (minDist / maxDist))
       );
 
-      // Apply hint penalty if hints were used
+      // Apply hint penalty
       if (hintsUsed === 1) {
         pointsEarned = Math.round(pointsEarned * 0.75); // 25% reduction
       } else if (hintsUsed >= 2) {
@@ -192,8 +191,8 @@ export default function GamePage() {
         setLastGuess(null);
         setMapPinPlaced(false);
         setIsRoundOver(false);
-        setHintsUsed(0); // Reset hints for new round
-        setWrongMap(false); // Reset wrong map state
+        setHintsUsed(0);
+        setWrongMap(false);
         setIsTransitioning(false);
       }, 2000);
     } else {
@@ -665,7 +664,6 @@ export default function GamePage() {
                   )}
                 </div>
               </div>
-              {/* Guess button always visible below map panel, disabled unless pin placed in map viewer */}
               <div
                 style={{
                   position: "absolute",
