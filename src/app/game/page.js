@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Sparkles, X } from "lucide-react";
 import client from "@/api/client";
 import MapViewer from "@/components/MapViewer";
+import Footer from "@/components/Footer";
 
 export default function GamePage() {
   const TOTAL_ROUNDS = 3;
@@ -87,7 +88,11 @@ export default function GamePage() {
 
   const handleGuess = () => {
     // Check if the selected map matches the current spot's map
-    if (lastGuess && currentSpot && lastGuess.mapName !== currentSpot.map_name) {
+    if (
+      lastGuess &&
+      currentSpot &&
+      lastGuess.mapName !== currentSpot.map_name
+    ) {
       setWrongMap(true);
       // Give 0 points for wrong map and end the round
       setRoundScores((prev) => [...prev, 0]);
@@ -131,7 +136,7 @@ export default function GamePage() {
       pointsEarned = Math.round(
         MAX_POINTS_PER_ROUND * Math.exp(-4 * (minDist / maxDist))
       );
-      
+
       // Apply hint penalty if hints were used
       if (hintsUsed === 1) {
         pointsEarned = Math.round(pointsEarned * 0.75); // 25% reduction
@@ -142,23 +147,20 @@ export default function GamePage() {
     setRoundScores((prev) => [...prev, pointsEarned]);
     setIsRoundOver(true);
   };
-  
+
   const handleHintClick = () => {
     if (hintsUsed < 2) {
       setShowHintModal(true);
     }
   };
-  
+
   const takeHint = () => {
-    // Show loading spinner while new image loads
     setShowSpinner(true);
-    
-    // Use setTimeout to ensure the spinner is visible before changing the hint state
+
     setTimeout(() => {
       setHintsUsed(hintsUsed + 1);
       setShowHintModal(false);
-      
-      // Hide spinner after a short delay to ensure the new image has time to load
+
       setTimeout(() => {
         setShowSpinner(false);
       }, 1100);
@@ -166,7 +168,7 @@ export default function GamePage() {
   };
 
   const [showResults, setShowResults] = useState(false);
-  
+
   const handleNextRound = () => {
     if (currentRound < TOTAL_ROUNDS) {
       setIsTransitioning(true);
@@ -195,7 +197,6 @@ export default function GamePage() {
         setIsTransitioning(false);
       }, 2000);
     } else {
-      // Show final results screen
       setShowResults(true);
     }
   };
@@ -206,18 +207,7 @@ export default function GamePage() {
         <main className="flex-grow flex flex-col items-center justify-center text-center">
           <div className="animate-spin h-10 w-10 border-4 border-white rounded-full border-t-transparent"></div>
         </main>
-        <footer className="w-full flex gap-6 flex-wrap items-center justify-center p-4 font-medium text-neutral-400">
-          <a className="flex items-center gap-2">© 2025 ztzt</a>
-          <a
-            className="flex items-center gap-2 hover:bg-neutral-800 transition-colors duration-200 rounded-full px-4 py-2"
-            href="https://youtube.com/@ztztbw"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            youtube.com/@ztztbw
-          </a>
-          <a className="flex items-center gap-2">ztztalt@gmail.com</a>
-        </footer>
+        <Footer />
       </div>
     );
   }
@@ -292,8 +282,8 @@ export default function GamePage() {
         const cx = closest.x * scaleX;
         const cy = closest.y * scaleY;
 
-       // Set the shadow properties for the circles
-        ctx.shadowColor = 'rgba(0, 0, 0, 1)';
+        // Set the shadow properties for the circles
+        ctx.shadowColor = "rgba(0, 0, 0, 1)";
         ctx.shadowBlur = 10;
 
         // Draw the user guess circle (blue)
@@ -309,13 +299,13 @@ export default function GamePage() {
         ctx.fill();
 
         // Reset shadow properties before drawing the line
-        ctx.shadowColor = 'transparent';
+        ctx.shadowColor = "transparent";
         ctx.shadowBlur = 0;
 
         // Create the gradient for the line
         let gradient = ctx.createLinearGradient(gx, gy, cx, cy);
-        gradient.addColorStop(0, '#2563eb');
-        gradient.addColorStop(1, 'rgba(239,68,68)');
+        gradient.addColorStop(0, "#2563eb");
+        gradient.addColorStop(1, "rgba(239,68,68)");
 
         // Draw the line with the gradient
         ctx.beginPath();
@@ -349,9 +339,9 @@ export default function GamePage() {
   // Game Results Screen
   if (showResults) {
     // Get map names for each round
-    const roundMaps = usedSpotIndices.map(idx => {
+    const roundMaps = usedSpotIndices.map((idx) => {
       const spot = allSpots[idx];
-      const mapObj = maps.find(m => m.map_name === spot.map_name);
+      const mapObj = maps.find((m) => m.map_name === spot.map_name);
       return mapObj ? mapObj.map_name : "Unknown";
     });
 
@@ -359,28 +349,39 @@ export default function GamePage() {
       <div className="flex flex-col min-h-screen">
         <main className="flex-grow flex flex-col items-center justify-center text-center">
           <h1 className="text-3xl font-bold mb-8">Game Results</h1>
-          
+
           <div className="bg-neutral-900/80 rounded-xl p-6 mb-8 w-full max-w-md">
             <h2 className="text-2xl font-bold mb-6 text-white">
-              <span className="text-white">{totalScoreSoFar} <span className="text-neutral-400 text-xl font-medium">/ {maxScore}</span></span>
+              <span className="text-white">
+                {totalScoreSoFar}{" "}
+                <span className="text-neutral-400 text-xl font-medium">
+                  / {maxScore}
+                </span>
+              </span>
             </h2>
-            
+
             <div className="space-y-4">
-            {roundScores.map((score, index) => (
-              <div
-                key={index}
-                className={`flex justify-between items-center pb-3 ${index === roundScores.length - 1 ? '' : 'border-b border-neutral-800'}`}
-              >
-                <div className="text-left">
-                  <div className="font-medium">Round {index + 1}</div>
-                  <div className="text-sm text-neutral-400 capitalize">{roundMaps[index]}</div>
+              {roundScores.map((score, index) => (
+                <div
+                  key={index}
+                  className={`flex justify-between items-center pb-3 ${
+                    index === roundScores.length - 1
+                      ? ""
+                      : "border-b border-neutral-800"
+                  }`}
+                >
+                  <div className="text-left">
+                    <div className="font-medium">Round {index + 1}</div>
+                    <div className="text-sm text-neutral-400 capitalize">
+                      {roundMaps[index]}
+                    </div>
+                  </div>
+                  <div className="font-bold text-xl">{score}</div>
                 </div>
-                <div className="font-bold text-xl">{score}</div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-          </div>
-          
+
           <div>
             <button
               onClick={handleExit}
@@ -396,23 +397,10 @@ export default function GamePage() {
             </button>
           </div>
         </main>
-        <footer className="w-full flex gap-6 flex-wrap items-center justify-center p-4 font-medium text-neutral-400">
-          <a className="flex items-center gap-2">© 2025 ztzt</a>
-          <a
-            className="flex items-center gap-2 hover:bg-neutral-800 transition-colors duration-200 rounded-full px-4 py-2"
-            href="https://youtube.com/@ztztbw"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            youtube.com/@ztztbw
-          </a>
-          <a className="flex items-center gap-2">ztztalt@gmail.com</a>
-        </footer>
+        <Footer />
       </div>
     );
   }
-
-
 
   if (isRoundOver) {
     // Find map object for current spot
@@ -427,14 +415,22 @@ export default function GamePage() {
             <div className="w-[300px] md:w-[400px] bg-[#230F0F] rounded-xl p-6 mb-6">
               <h2 className="text-xl font-bold mb-2">Wrong Map</h2>
               <p>
-                You selected <span className="font-bold capitalize">{lastGuess.mapName}</span>
+                You selected{" "}
+                <span className="font-bold capitalize">
+                  {lastGuess.mapName}
+                </span>
               </p>
               <p>
-                but this spot is on <span className="font-bold capitalize">{currentSpot.map_name}</span>
+                but this spot is on{" "}
+                <span className="font-bold capitalize">
+                  {currentSpot.map_name}
+                </span>
               </p>
             </div>
           ) : (
-            mapObj && guess && correctPoints?.length > 0 && (
+            mapObj &&
+            guess &&
+            correctPoints?.length > 0 && (
               <RoundSummaryMap
                 mapObj={mapObj}
                 guess={guess}
@@ -445,14 +441,18 @@ export default function GamePage() {
           <h2 className="text-xl text-neutral-400 font-medium">
             You scored{" "}
             <span className="text-white">
-              {roundScores[currentRound - 1]} <span className="text-[16px] text-[#929292]">/ {MAX_POINTS_PER_ROUND}{" "}</span>
+              {roundScores[currentRound - 1]}{" "}
+              <span className="text-[16px] text-[#929292]">
+                / {MAX_POINTS_PER_ROUND}{" "}
+              </span>
             </span>
             points this round
           </h2>
           <p className="text-xl mt-1 mb-6 text-neutral-400 font-medium">
             You now have{" "}
             <span className="text-white">
-              {totalScoreSoFar} <span className="text-[16px] text-[#929292]">/ {maxScore}{" "}</span>
+              {totalScoreSoFar}{" "}
+              <span className="text-[16px] text-[#929292]">/ {maxScore} </span>
             </span>
             points in total
           </p>
@@ -471,18 +471,7 @@ export default function GamePage() {
             </button>
           </div>
         </main>
-        <footer className="w-full flex gap-6 flex-wrap items-center justify-center p-4 font-medium text-neutral-400">
-          <a className="flex items-center gap-2">© 2025 ztzt</a>
-          <a
-            className="flex items-center gap-2 hover:bg-neutral-800 transition-colors duration-200 rounded-full px-4 py-2"
-            href="https://youtube.com/@ztztbw"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            youtube.com/@ztztbw
-          </a>
-          <a className="flex items-center gap-2">ztztalt@gmail.com</a>
-        </footer>
+        <Footer />
       </div>
     );
   }
@@ -500,31 +489,34 @@ export default function GamePage() {
   return (
     <>
       {/* Blur background when hint modal is active */}
-      <div 
+      <div
         className={`fixed inset-0 z-40 bg-black/32 backdrop-blur-[5px] transition-all duration-300 ${
-          showHintModal ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          showHintModal ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       ></div>
-      
+
       {/* Modal with animations */}
-      <div 
+      <div
         className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-300 ${
-          showHintModal ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          showHintModal ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
-        <div 
+        <div
           className={`bg-[#0F0F0F] rounded-xl px-4 py-3 max-w-[390px] w-full mx-4 shadow-2xl transition-all duration-300 transform ${
-            showHintModal ? 'scale-100' : 'scale-90'
+            showHintModal ? "scale-100" : "scale-90"
           }`}
         >
           <h2 className="text-2xl font-bold mb-2 text-center">Need a hint?</h2>
           {hintsUsed === 0 ? (
             <p className="text-neutral-400 mb-5 text-center font-medium">
-              Taking a hint will zoom out the image, letting you see more of the map. However, it will give you <span className="text-white">25%</span> less points this round.
+              Taking a hint will zoom out the image, letting you see more of the
+              map. However, it will give you{" "}
+              <span className="text-white">25%</span> less points this round.
             </p>
           ) : (
             <p className="text-neutral-400 mb-5 text-center font-medium">
-              Taking a second hint will give you <span className="text-white">50%</span> less points this round.
+              Taking a second hint will give you{" "}
+              <span className="text-white">50%</span> less points this round.
             </p>
           )}
           <div className="flex justify-center gap-3 mb-1.5">
@@ -543,25 +535,14 @@ export default function GamePage() {
           </div>
         </div>
       </div>
-      
+
       {/* Spinner overlay */}
       {showSpinner && (
         <div className="fixed inset-0 z-50 flex flex-col bg-black">
           <main className="flex-grow flex flex-col items-center justify-center text-center">
             <div className="animate-spin h-10 w-10 border-4 border-white rounded-full border-t-transparent"></div>
           </main>
-          <footer className="w-full flex gap-6 flex-wrap items-center justify-center p-4 font-medium text-neutral-400">
-            <a className="flex items-center gap-2">© 2025 ztzt</a>
-            <a
-              className="flex items-center gap-2 hover:bg-neutral-800 transition-colors duration-200 rounded-full px-4 py-2"
-              href="https://youtube.com/@ztztbw"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              youtube.com/@ztztbw
-            </a>
-            <a className="flex items-center gap-2">ztztalt@gmail.com</a>
-          </footer>
+          <Footer />
         </div>
       )}
       <div className="flex flex-col h-screen bg-black text-white relative">
@@ -587,12 +568,18 @@ export default function GamePage() {
             <div className="relative inline-block">
               {/* SPOT IMAGE (large central game screenshot) */}
               <img
-                src={hintsUsed === 0 ? currentSpot.images?.zoom3 : hintsUsed === 1 ? currentSpot.images?.zoom2 : currentSpot.images?.zoom1}
+                src={
+                  hintsUsed === 0
+                    ? currentSpot.images?.zoom3
+                    : hintsUsed === 1
+                    ? currentSpot.images?.zoom2
+                    : currentSpot.images?.zoom1
+                }
                 alt="Spot"
                 className="max-h-[72vh] object-contain rounded-xl block"
                 style={{ display: "block" }}
               />
-              
+
               {/* Hint button centered below the image */}
               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 backdrop-blur-md rounded-full">
                 {hintsUsed < 2 ? (
@@ -704,19 +691,7 @@ export default function GamePage() {
             </div>
           </div>
         </div>
-
-        <footer className="w-full flex gap-6 flex-wrap items-center justify-center p-4 font-medium text-neutral-400">
-          <a className="flex items-center gap-2">© 2025 ztzt</a>
-          <a
-            className="flex items-center gap-2 hover:bg-neutral-800 transition-colors duration-200 rounded-full px-4 py-2"
-            href="https://youtube.com/@ztztbw"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            youtube.com/@ztztbw
-          </a>
-          <a className="flex items-center gap-2">ztztalt@gmail.com</a>
-        </footer>
+        <Footer />
       </div>
     </>
   );
